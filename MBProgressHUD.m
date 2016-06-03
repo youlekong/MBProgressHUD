@@ -414,6 +414,17 @@ static const CGFloat MBDefaultDetailsLabelFontSize = 12.f;
         [indicator removeFromSuperview];
         indicator = nil;
     }
+    else if (mode == MBProgressHUDModeSuccess) {
+        [indicator removeFromSuperview];
+        indicator = [[MBSuccessView alloc] init];
+        [self.bezelView addSubview:indicator];
+    }
+    else if (mode == MBProgressHUDModeFail) {
+        [indicator removeFromSuperview];
+        indicator = [[MBFailView alloc] init];
+        [self.bezelView addSubview:indicator];
+    }
+    
     indicator.translatesAutoresizingMaskIntoConstraints = NO;
     self.indicator = indicator;
 
@@ -451,6 +462,10 @@ static const CGFloat MBDefaultDetailsLabelFontSize = 12.f;
     } else if ([indicator isKindOfClass:[MBBarProgressView class]]) {
         ((MBBarProgressView *)indicator).progressColor = color;
         ((MBBarProgressView *)indicator).lineColor = color;
+    } else if ([indicator isKindOfClass:[MBSuccessView class]]) {
+
+    } else if ([indicator isKindOfClass:[MBFailView class]]) {
+        
     } else {
 #if __IPHONE_OS_VERSION_MAX_ALLOWED >= 70000 || TARGET_OS_TV
         if ([indicator respondsToSelector:@selector(setTintColor:)]) {
@@ -1392,3 +1407,131 @@ static const CGFloat MBDefaultDetailsLabelFontSize = 12.f;
 }
 
 @end
+
+
+@implementation MBSuccessView
+
+- (id)init {
+    return [self initWithFrame:CGRectMake(.0f, .0f, 37.0f, 37.0f)];
+}
+
+- (id)initWithFrame:(CGRect)frame {
+    self = [super initWithFrame:frame];
+    if (self) {
+        
+        self.backgroundColor = [UIColor clearColor];
+        self.opaque = NO;
+        
+        [self setupSuccessView];
+    }
+    return self;
+}
+
+- (void)setupSuccessView
+{
+    UIBezierPath* checkmarkPath = [UIBezierPath bezierPathWithOvalInRect:self.bounds];
+    [checkmarkPath moveToPoint:CGPointMake(CGRectGetWidth(self.bounds) * 0.28f, CGRectGetHeight(self.bounds) * 0.53f)];
+    [checkmarkPath addLineToPoint:CGPointMake(CGRectGetWidth(self.bounds) * 0.42f, CGRectGetHeight(self.bounds) * 0.66f)];
+    [checkmarkPath addLineToPoint:CGPointMake(CGRectGetWidth(self.bounds) * 0.72f, CGRectGetHeight(self.bounds) * 0.36f)];
+    checkmarkPath.lineCapStyle = kCGLineCapSquare;
+    
+    self.checkmarkLayer = [CAShapeLayer layer];
+    self.checkmarkLayer.path = checkmarkPath.CGPath;
+    self.checkmarkLayer.fillColor = nil;
+    self.checkmarkLayer.strokeColor = [UIColor whiteColor].CGColor;
+    self.checkmarkLayer.lineWidth = 2.f;//self.lineWidth * 2;
+    
+    [self.layer addSublayer:self.checkmarkLayer];
+    
+    [self.layer removeAllAnimations];
+    [self.checkmarkLayer removeAllAnimations];
+    [self animateSuccess];
+}
+
+- (void)animateSuccess
+{
+    CABasicAnimation *checkmarkAnimation = [CABasicAnimation animationWithKeyPath:@"strokeEnd"];
+    checkmarkAnimation.duration = 1.5f;
+    checkmarkAnimation.removedOnCompletion = NO;
+    checkmarkAnimation.fillMode = kCAFillModeBoth;
+    checkmarkAnimation.fromValue = @(0);
+    checkmarkAnimation.toValue = @(1);
+    checkmarkAnimation.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseOut];
+    
+    [self.checkmarkLayer addAnimation:checkmarkAnimation
+                               forKey:@"strokeEnd"];
+}
+
+#pragma mark - Layout
+
+- (CGSize)intrinsicContentSize {
+    return CGSizeMake(37.f, 37.f);
+}
+
+@end
+
+
+@implementation MBFailView
+
+- (id)init {
+    return [self initWithFrame:CGRectMake(.0f, .0f, 37.0f, 37.0f)];
+}
+
+- (id)initWithFrame:(CGRect)frame {
+    self = [super initWithFrame:frame];
+    if (self) {
+        
+        self.backgroundColor = [UIColor clearColor];
+        self.opaque = NO;
+        
+        [self setupErrorView];
+    }
+    return self;
+}
+
+- (void)setupErrorView
+{
+    UIBezierPath* crossPath = [UIBezierPath bezierPathWithOvalInRect:self.bounds];
+    CGFloat beginFloat = 0.35;
+    CGFloat endFloat = 1 - beginFloat;
+    [crossPath moveToPoint:CGPointMake(CGRectGetWidth(self.bounds) * endFloat, CGRectGetHeight(self.bounds) * beginFloat)];
+    [crossPath addLineToPoint:CGPointMake(CGRectGetWidth(self.bounds) * beginFloat, CGRectGetHeight(self.bounds) * endFloat)];
+    [crossPath moveToPoint:CGPointMake(CGRectGetWidth(self.bounds) * beginFloat, CGRectGetHeight(self.bounds) * beginFloat)];
+    [crossPath addLineToPoint:CGPointMake(CGRectGetWidth(self.bounds) * endFloat, CGRectGetHeight(self.bounds) * endFloat)];
+    crossPath.lineCapStyle = kCGLineCapSquare;
+    
+    self.crossLayer = [CAShapeLayer layer];
+    self.crossLayer.path = crossPath.CGPath;
+    self.crossLayer.fillColor = nil;
+    self.crossLayer.strokeColor = [UIColor whiteColor].CGColor;
+    self.crossLayer.lineWidth = 2.f;//self.lineWidth * 2;
+    
+    [self.layer addSublayer:self.crossLayer];
+    
+    [self.layer removeAllAnimations];
+    [self.crossLayer removeAllAnimations];
+    [self animateError];
+}
+
+- (void)animateError
+{
+    CABasicAnimation *checkmarkAnimation = [CABasicAnimation animationWithKeyPath:@"strokeEnd"];
+    checkmarkAnimation.duration = 1.5f;
+    checkmarkAnimation.removedOnCompletion = NO;
+    checkmarkAnimation.fillMode = kCAFillModeBoth;
+    checkmarkAnimation.fromValue = @(0);
+    checkmarkAnimation.toValue = @(1);
+    checkmarkAnimation.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseOut];
+    
+    [self.crossLayer addAnimation:checkmarkAnimation
+                           forKey:@"strokeEnd"];
+}
+
+#pragma mark - Layout
+
+- (CGSize)intrinsicContentSize {
+    return CGSizeMake(37.f, 37.f);
+}
+
+@end
+

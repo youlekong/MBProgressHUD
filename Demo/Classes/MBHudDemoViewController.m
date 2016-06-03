@@ -58,7 +58,9 @@
       @[[MBExample exampleWithTitle:@"On window" selector:@selector(indeterminateExample)],
         [MBExample exampleWithTitle:@"NSURLSession" selector:@selector(networkingExample)],
         [MBExample exampleWithTitle:@"Dim background" selector:@selector(indeterminateExample)],
-        [MBExample exampleWithTitle:@"Colored" selector:@selector(indeterminateExample)]]
+        [MBExample exampleWithTitle:@"Colored" selector:@selector(indeterminateExample)]],
+	  @[[MBExample exampleWithTitle:@"success mode" selector:@selector(successExample)],
+		[MBExample exampleWithTitle:@"fail mode" selector:@selector(failExample)]]
       ];
 }
 
@@ -249,6 +251,20 @@
     hud.minSize = CGSizeMake(150.f, 100.f);
 
     [self doSomeNetworkWorkWithProgress];
+}
+
+- (void)successExample {
+	MBProgressHUD* hud = [MBProgressHUD showHUDAddedTo:self.navigationController.view animated:YES];
+	hud.mode = MBProgressHUDModeSuccess;
+	hud.label.text = @"设置成功";
+	[hud hideAnimated:YES afterDelay:2.f];
+}
+
+- (void)failExample {
+	MBProgressHUD* hud = [MBProgressHUD showHUDAddedTo:self.navigationController.view animated:YES];
+	hud.mode = MBProgressHUDModeFail;
+	hud.label.text = @"设置失败";
+	[hud hideAnimated:YES afterDelay:2.f];
 }
 
 #pragma mark - Tasks

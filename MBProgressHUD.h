@@ -29,6 +29,7 @@
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
 #import <CoreGraphics/CoreGraphics.h>
+#import <QuartzCore/QuartzCore.h>
 
 @class MBBackgroundView;
 @protocol MBProgressHUDDelegate;
@@ -48,7 +49,11 @@ typedef NS_ENUM(NSInteger, MBProgressHUDMode) {
     /// Shows a custom view.
     MBProgressHUDModeCustomView,
     /// Shows only labels.
-    MBProgressHUDModeText
+    MBProgressHUDModeText,
+    /** Shows success */
+    MBProgressHUDModeSuccess,
+    /** Shows fail */
+    MBProgressHUDModeFail
 };
 
 typedef NS_ENUM(NSInteger, MBProgressHUDAnimation) {
@@ -379,6 +384,25 @@ NS_ASSUME_NONNULL_BEGIN
  * @note Due to iOS 7 not supporting UIVisualEffectView, the blur effect differs slightly between iOS 7 and later versions.
  */
 @property (nonatomic, strong) UIColor *color;
+
+@end
+
+
+@interface MBSuccessView : UIView
+
+/** 
+ * for the result of successful status
+ */
+@property (nonatomic, strong) CAShapeLayer *checkmarkLayer;
+
+@end
+
+@interface MBFailView : UIView
+
+/**
+ * for the result of fail status
+ */
+@property (nonatomic, strong) CAShapeLayer *crossLayer;
 
 @end
 
