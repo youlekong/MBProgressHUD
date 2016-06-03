@@ -105,6 +105,27 @@ You should be aware that any HUD updates issued inside the above block won't be 
 For more examples, including how to use MBProgressHUD with asynchronous operations such as NSURLConnection, take a look at the bundled demo project. Extensive API documentation is provided in the header file (MBProgressHUD.h).
 
 
+## Additional Usage
+
+successful status
+
+```objective-c
+MBProgressHUD* hud = [MBProgressHUD showHUDAddedTo:self.navigationController.view animated:YES];
+hud.mode = MBProgressHUDModeSuccess;
+hud.label.text = @"设置成功";
+[hud hideAnimated:YES afterDelay:2.f];
+```
+
+fail status
+
+```objective-c
+MBProgressHUD* hud = [MBProgressHUD showHUDAddedTo:self.navigationController.view animated:YES];
+hud.mode = MBProgressHUDModeFail;
+hud.label.text = @"设置失败";
+[hud hideAnimated:YES afterDelay:2.f];
+```
+
+
 ## License
 
 This code is distributed under the terms and conditions of the [MIT license](LICENSE).
